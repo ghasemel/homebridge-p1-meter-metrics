@@ -1,0 +1,30 @@
+{
+  "pluginAlias": "HomeWizardTiles",
+  "pluginType": "platform",
+  "singular": true,
+  "headerDisplay": "Shows a HomeWizard P1 meter as eight Matter tiles. The W number on each tile is the value it stands for: W, Wh, kWh, litres or m3. Needs Matter turned on for the plugin's child bridge.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "host": {
+        "title": "Meter IP address",
+        "description": "IP address of the HomeWizard P1 meter. Turn on Local API for it in the HomeWizard Energy app.",
+        "type": "string",
+        "required": true,
+        "format": "ipv4"
+      },
+      "electricityMonthSoFar": {
+        "title": "Electricity used this month so far (kWh)",
+        "description": "Optional, only for the month you install the plugin in: the HomeWizard app's month total. Without it, the month tiles start counting from the moment of install.",
+        "type": "number",
+        "minimum": 0
+      },
+      "gasMonthSoFar": {
+        "title": "Gas used this month so far (m3)",
+        "description": "Optional, as above.",
+        "type": "number",
+        "minimum": 0
+      }
+    }
+  }
+}
