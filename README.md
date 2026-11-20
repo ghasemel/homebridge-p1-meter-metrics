@@ -7,19 +7,20 @@ electricity and gas, each now, in the last hour, this month and in total.
 Apple Home only draws a number on a tile for plugs that report power, and it has no tile for gas
 at all. So every tile is a Matter plug whose "W" number is the value it stands for:
 
-| Tile                | Shows                                               | Unit   |
-| ------------------- | --------------------------------------------------- | ------ |
-| `Electricity`       | live power                                          | W      |
-| `Electricity 1h`    | used in the last 60 minutes                         | Wh     |
-| `Electricity month` | used this month                                     | kWh    |
-| `Electricity total` | meter total                                         | kWh    |
-| `Gas`               | used in the last 5 minutes (between two readings)   | litres |
-| `Gas 1h`            | used in the last 60 minutes                         | litres |
-| `Gas month`         | used this month                                     | m³     |
-| `Gas total`         | meter total                                         | m³     |
+| Tile                    | Shows                                             |
+| ----------------------- | ------------------------------------------------- |
+| `Electricity W`         | live power                                        |
+| `Electricity 1h Wh`     | used in the last 60 minutes                       |
+| `Electricity month kWh` | used this month                                   |
+| `Electricity total kWh` | meter total                                       |
+| `Gas L`                 | litres used in the last 5 minutes (between two readings) |
+| `Gas 1h L`              | litres used in the last 60 minutes                |
+| `Gas month m³`          | used this month                                   |
+| `Gas total m³`          | meter total                                       |
 
-For example, `Gas · On · 12W` means 12 litres in the last 5 minutes. The unit on the tile always
-says W.
+Home always labels the number W, so each tile's name ends with its real unit. For example,
+`Gas L · On · 12W` means 12 litres in the last 5 minutes. Short periods use litres and Wh
+because Home only shows whole numbers: 0.012 m³ would read 0.
 
 ## How it works
 
