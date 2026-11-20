@@ -1,8 +1,8 @@
 {
-  "name": "homebridge-homewizard-tiles",
-  "displayName": "HomeWizard Tiles",
+  "name": "homebridge-p1-meter-metrics",
+  "displayName": "P1 Meter Metrics",
   "version": "1.0.0",
-  "description": "Shows a HomeWizard P1 meter in Apple Home as Matter tiles: electricity and gas now, last hour, this month and total",
+  "description": "Shows HomeWizard P1 meter metrics in Apple Home: electricity and gas now, last hour, this month and total, as Matter tiles",
   "type": "module",
   "main": "dist/index.js",
   "files": [
@@ -14,13 +14,13 @@
   },
   "author": "ghasemel",
   "license": "MIT",
-  "homepage": "https://github.com/ghasemel/homebridge-homewizard-tiles",
+  "homepage": "https://github.com/ghasemel/homebridge-p1-meter-metrics",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ghasemel/homebridge-homewizard-tiles.git"
+    "url": "git+https://github.com/ghasemel/homebridge-p1-meter-metrics.git"
   },
   "bugs": {
-    "url": "https://github.com/ghasemel/homebridge-homewizard-tiles/issues"
+    "url": "https://github.com/ghasemel/homebridge-p1-meter-metrics/issues"
   },
   "keywords": ["homebridge-plugin", "homewizard", "p1", "gas", "electricity", "energy", "matter"],
   "engines": {

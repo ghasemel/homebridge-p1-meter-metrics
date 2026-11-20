@@ -1,19 +1,19 @@
 /**
- * homebridge-homewizard-tiles
+ * homebridge-p1-meter-metrics
  *
  * Shows a HomeWizard P1 meter in Apple Home as eight Matter plug tiles. Apple Home only
  * draws a number on a tile for plugs with a power reading, so every tile is a plug whose
- * "W" number is the value below. Home always labels it W, so each tile's name ends
- * with its real unit:
+ * "W" number is the value below. Home always labels it W, so the gas tiles' names end
+ * with their real unit:
  *
- *   Electricity W          live power
- *   Electricity 1h Wh      used in the last 60 minutes
- *   Electricity month kWh  used this month
- *   Electricity total kWh  meter total
- *   Gas L                  used in the last 5 minutes (between two meter readings), litres
- *   Gas 1h L               used in the last 60 minutes, litres
- *   Gas month m³           used this month
- *   Gas total m³           meter total
+ *   Electricity        live power, W
+ *   Electricity 1h     used in the last 60 minutes, Wh
+ *   Electricity month  used this month, kWh
+ *   Electricity total  meter total, kWh
+ *   Gas L              used in the last 5 minutes (between two meter readings), litres
+ *   Gas 1h L           used in the last 60 minutes, litres
+ *   Gas month m³       used this month
+ *   Gas total m³       meter total
  *
  * Short periods use litres (and Wh) because Home shows whole numbers: 0.012 m3 would read 0.
  *
@@ -26,16 +26,20 @@ import { join } from 'node:path';
 import { MINUTE, appendHistory, litresLastHour, litresLastStep, monthKey, monthStart, round, wattHoursLastHour } from './calc.js';
 import { readMeter } from './meter.js';
 
-const PLUGIN_NAME = 'homebridge-homewizard-tiles';
+const PLUGIN_NAME = 'homebridge-p1-meter-metrics';
+// The plugin's first name, kept on purpose: Homebridge ties the cached tiles to the platform
+// name, and the tile UUIDs are made from this seed, so keeping both keeps the tiles where they
+// are in Apple Home.
 const PLATFORM_NAME = 'HomeWizardTiles';
+const UUID_SEED = 'homebridge-homewizard-tiles';
 const POLL_MS = 10_000;
 const KEEP_MS = 90 * MINUTE;
 
 const TILES = [
-    { key: 'electricity', name: 'Electricity W', model: 'Electricity now (W)' },
-    { key: 'electricity-1h', name: 'Electricity 1h Wh', model: 'Electricity last hour (Wh)' },
-    { key: 'electricity-month', name: 'Electricity month kWh', model: 'Electricity this month (kWh)' },
-    { key: 'electricity-total', name: 'Electricity total kWh', model: 'Electricity meter total (kWh)' },
+    { key: 'electricity', name: 'Electricity', model: 'Electricity now (W)' },
+    { key: 'electricity-1h', name: 'Electricity 1h', model: 'Electricity last hour (Wh)' },
+    { key: 'electricity-month', name: 'Electricity month', model: 'Electricity this month (kWh)' },
+    { key: 'electricity-total', name: 'Electricity total', model: 'Electricity meter total (kWh)' },
     { key: 'gas', name: 'Gas L', model: 'Gas last 5 minutes (litres)' },
     { key: 'gas-1h', name: 'Gas 1h L', model: 'Gas last hour (litres)' },
     { key: 'gas-month', name: 'Gas month m³', model: 'Gas this month (m3)' },
@@ -56,7 +60,7 @@ class HomeWizardTilesPlatform {
         this.log = log;
         this.config = config ?? {};
         this.api = api;
-        this.stateFile = join(api.user.storagePath(), 'homewizard-tiles.json');
+        this.stateFile = join(api.user.storagePath(), 'p1-meter-metrics.json');
         api.on('didFinishLaunching', () => void this.start());
     }
 
@@ -82,7 +86,7 @@ class HomeWizardTilesPlatform {
         const fresh = [];
         const renamed = [];
         for (const tile of TILES) {
-            const uuid = matter.uuid.generate(`${PLUGIN_NAME}-${tile.key}`);
+            const uuid = matter.uuid.generate(`${UUID_SEED}-${tile.key}`);
             this.uuids[tile.key] = uuid;
             const cached = this.cached.get(uuid);
             if (cached) {

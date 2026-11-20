@@ -1,4 +1,4 @@
-# homebridge-homewizard-tiles
+# homebridge-p1-meter-metrics
 
 A [Homebridge](https://homebridge.io) plugin that shows a
 [HomeWizard P1 meter](https://www.homewizard.com/p1-meter/) in Apple Home as eight tiles:
@@ -9,16 +9,16 @@ at all. So every tile is a Matter plug whose "W" number is the value it stands f
 
 | Tile                    | Shows                                             |
 | ----------------------- | ------------------------------------------------- |
-| `Electricity W`         | live power                                        |
-| `Electricity 1h Wh`     | used in the last 60 minutes                       |
-| `Electricity month kWh` | used this month                                   |
-| `Electricity total kWh` | meter total                                       |
+| `Electricity`           | live power, W                                     |
+| `Electricity 1h`        | used in the last 60 minutes, Wh                   |
+| `Electricity month`     | used this month, kWh                              |
+| `Electricity total`     | meter total, kWh                                  |
 | `Gas L`                 | litres used in the last 5 minutes (between two readings) |
 | `Gas 1h L`              | litres used in the last 60 minutes                |
 | `Gas month m³`          | used this month                                   |
 | `Gas total m³`          | meter total                                       |
 
-Home always labels the number W, so each tile's name ends with its real unit. For example,
+Home always labels the number W, so the gas tiles' names end with their real unit. For example,
 `Gas L · On · 12W` means 12 litres in the last 5 minutes. Short periods use litres and Wh
 because Home only shows whole numbers: 0.012 m³ would read 0.
 
@@ -33,7 +33,7 @@ The plugin reads the meter's local API every 10 seconds.
   minutes earlier.
 - **Month** tiles count from the meter totals at the start of the month, and reset on the 1st.
 - The hour tiles show 0 until the plugin has an hour of history. History and the month start are
-  saved in `homewizard-tiles.json` in the Homebridge storage folder, so a restart does not reset
+  saved in `p1-meter-metrics.json` in the Homebridge storage folder, so a restart does not reset
   them.
 
 Turning a tile off does nothing: it switches itself back on within a minute.
@@ -51,7 +51,7 @@ Turning a tile off does nothing: it switches itself back on within a minute.
      "platform": "HomeWizardTiles",
      "host": "192.0.2.10",
      "_bridge": {
-       "name": "HomeWizard Tiles",
+       "name": "P1 Meter Metrics",
        "username": "0E:12:34:56:78:9A",
        "port": 51900,
        "hap": { "enabled": false },

@@ -1,5 +1,5 @@
 /**
- * Pure calculations for the HomeWizard tiles. No Homebridge imports, so they can be
+ * Pure calculations for the P1 Meter Metrics tiles. No Homebridge imports, so they can be
  * tested on their own.
  *
  * Units handed back here are the numbers the tiles show:

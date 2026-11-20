@@ -2,7 +2,7 @@
   "pluginAlias": "HomeWizardTiles",
   "pluginType": "platform",
   "singular": true,
-  "headerDisplay": "Shows a HomeWizard P1 meter as eight Matter tiles. The W number on each tile is the value it stands for: W, Wh, kWh, litres or m3. Needs Matter turned on for the plugin's child bridge.",
+  "headerDisplay": "P1 Meter Metrics: shows a HomeWizard P1 meter as eight Matter tiles. The W number on each tile is the value it stands for: W, Wh, kWh, litres or m3. Needs Matter turned on for the plugin's child bridge.",
   "schema": {
     "type": "object",
     "properties": {
