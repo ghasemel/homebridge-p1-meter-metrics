@@ -19,9 +19,9 @@
         "type": "number",
         "minimum": 0
       },
-      "gasMonthSoFar": {
-        "title": "Gas used this month so far (m3)",
-        "description": "Optional, as above.",
+      "gasMonthSoFarL": {
+        "title": "Gas used this month so far (litres)",
+        "description": "Optional, as above: the HomeWizard app's month total in litres, the unit the tile uses (32.7 m3 = 32700).",
         "type": "number",
         "minimum": 0
       }

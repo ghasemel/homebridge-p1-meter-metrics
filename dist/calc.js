@@ -4,7 +4,7 @@
  *
  * Units handed back here are the numbers the tiles show:
  *   electricity: W (now), Wh (last hour); month and total are sent in Wh too
- *   gas:         litres (last 5 minutes, last hour), m3 (month, total)
+ *   gas:         litres (last 5 minutes, last hour); month and total are sent in litres too
  */
 
 export const MINUTE = 60_000;
@@ -74,11 +74,11 @@ export function monthStart(state, key, kwh, m3, soFar) {
 }
 
 /**
- * The month-so-far numbers from the plugin settings, in the units the month start uses:
- * electricity is entered in Wh (the unit its tile uses), gas in m3.
+ * The month-so-far numbers from the plugin settings, in the units the month start uses.
+ * They are entered in the units the tiles use: electricity in Wh, gas in litres.
  */
 export function monthSoFarFromConfig(config) {
-    return { kwh: (Number(config?.electricityMonthSoFarWh) || 0) / 1000, m3: Number(config?.gasMonthSoFar) || 0 };
+    return { kwh: (Number(config?.electricityMonthSoFarWh) || 0) / 1000, m3: (Number(config?.gasMonthSoFarL) || 0) / 1000 };
 }
 
 /** Rounds a tile value to the precision it is shown with. */

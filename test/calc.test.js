@@ -55,8 +55,8 @@ test('appendHistory drops entries older than the window', () => {
     assert.deepEqual(appendHistory(history, { when: 100 * MINUTE }, 60 * MINUTE).map((e) => e.when), [50 * MINUTE, 100 * MINUTE]);
 });
 
-test('month so far: electricity is entered in Wh, gas in m3', () => {
-    assert.deepEqual(monthSoFarFromConfig({ electricityMonthSoFarWh: 96500, gasMonthSoFar: 21.4 }), { kwh: 96.5, m3: 21.4 });
+test('month so far: electricity is entered in Wh, gas in litres', () => {
+    assert.deepEqual(monthSoFarFromConfig({ electricityMonthSoFarWh: 96500, gasMonthSoFarL: 21400 }), { kwh: 96.5, m3: 21.4 });
     assert.deepEqual(monthSoFarFromConfig({}), { kwh: 0, m3: 0 });
 });
 

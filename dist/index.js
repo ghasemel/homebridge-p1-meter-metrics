@@ -12,8 +12,8 @@
  *   Electricity total  meter total, Wh (Home shows it as kW or MW)
  *   Gas L              used in the last 5 minutes (between two meter readings), litres
  *   Gas 1h L           used in the last 60 minutes, litres
- *   Gas month m³       used this month
- *   Gas total m³       meter total
+ *   Gas month m³       used this month, litres (Home shows 32,7kW for 32.7 m3)
+ *   Gas total m³       meter total, litres (Home shows kW, which reads as m3)
  *
  * Short periods use litres (and Wh) because Home shows whole numbers: 0.012 m3 would read 0.
  *
@@ -162,8 +162,10 @@ class HomeWizardTilesPlatform {
                 this.state.gasHistory = appendHistory(this.state.gasHistory, gas, KEEP_MS);
                 await this.show('gas', step);
                 await this.show('gas-1h', hour);
-                await this.show('gas-total', round(gas.total, 1));
-                if (this.state.month) await this.show('gas-month', round(gas.total - this.state.month.m3, 1));
+                // In litres, so Home shows them as kW where k means a thousand litres, which is m3
+                // (32.7 m3 = 32,700 L reads "32,7kW")
+                await this.show('gas-total', Math.round(gas.total * 1000));
+                if (this.state.month) await this.show('gas-month', Math.round((gas.total - this.state.month.m3) * 1000));
                 this.log.info(`Gas: ${step ?? '-'} L in the last 5 minutes, ${hour ?? '-'} L in the last hour, total ${gas.total} m3`);
             }
 

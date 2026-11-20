@@ -15,8 +15,8 @@ at all. So every tile is a Matter plug whose "W" number is the value it stands f
 | `Electricity total`     | meter total, Wh (Home shows kW or MW)             |
 | `Gas L`                 | litres used in the last 5 minutes (between two readings) |
 | `Gas 1h L`              | litres used in the last 60 minutes                |
-| `Gas month m³`          | used this month                                   |
-| `Gas total m³`          | meter total                                       |
+| `Gas month m³`          | used this month, litres (Home shows `32,7kW`, which reads as m³) |
+| `Gas total m³`          | meter total, litres (Home shows kW, which reads as m³) |
 
 Home always labels the number W, so the gas tiles' names end with their real unit. For example,
 `Gas L · On · 12W` means 12 litres in the last 5 minutes. Short periods use litres and Wh
@@ -44,7 +44,8 @@ Turning a tile off does nothing: it switches itself back on within a minute.
 2. Install the plugin from the Homebridge UI.
 3. In its settings, fill in the meter's IP address. For the month you install it in, you can also
    fill in the month totals so far from the HomeWizard app, so the month tiles start right:
-   electricity in Wh, the unit its tile uses (184 kWh is entered as 184000), and gas in m³.
+   in the units the tiles use: electricity in Wh (184 kWh is entered as 184000) and gas in litres
+   (32.7 m³ is entered as 32700).
 4. Run it as a child bridge with Matter on, for example:
 
    ```json
