@@ -1,7 +1,7 @@
 {
   "name": "homebridge-p1-meter-metrics",
   "displayName": "P1 Meter Metrics",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Shows HomeWizard P1 meter metrics in Apple Home: electricity and gas now, last hour, this month and total, as Matter tiles",
   "type": "module",
   "main": "dist/index.js",

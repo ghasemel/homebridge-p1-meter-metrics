@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { MINUTE, appendHistory, litresLastHour, litresLastStep, monthKey, monthStart, parseGasTimestamp, wattHoursLastHour } from '../dist/calc.js';
+import { MINUTE, appendHistory, litresLastHour, litresLastStep, monthKey, monthSoFarFromConfig, monthStart, parseGasTimestamp, wattHoursLastHour } from '../dist/calc.js';
 
 const start = parseGasTimestamp('250314070015');
 
@@ -29,10 +29,15 @@ test('gas: last hour is the total now minus the total 60 minutes earlier', () =>
     assert.equal(litresLastHour(list, current), 12 * 7);
 });
 
-test('gas: last hour is null until the history reaches back an hour', () => {
+test('gas: with less than an hour of history, last hour is the litres used so far', () => {
     const list = gasReadings(6);
     const current = list.pop();
-    assert.equal(litresLastHour(list, current), null);
+    assert.equal(litresLastHour(list, current), 5 * 7);
+});
+
+test('gas: last hour is null with no earlier reading at all', () => {
+    const [current] = gasReadings(1);
+    assert.equal(litresLastHour([], current), null);
 });
 
 test('electricity: last hour is the Wh used since the entry 60 minutes ago', () => {
@@ -40,14 +45,19 @@ test('electricity: last hour is the Wh used since the entry 60 minutes ago', () 
     assert.equal(wattHoursLastHour(history, start + 61 * MINUTE, 3150 + 61 * 0.005), 300);
 });
 
-test('electricity: last hour is null when the history is shorter than an hour', () => {
+test('electricity: with less than an hour of history, last hour is the Wh used so far', () => {
     const history = Array.from({ length: 20 }, (_, i) => ({ when: start + i * MINUTE, kwh: 3150 + i * 0.005 }));
-    assert.equal(wattHoursLastHour(history, start + 20 * MINUTE, 3150.1), null);
+    assert.equal(wattHoursLastHour(history, start + 20 * MINUTE, 3150.1), 100);
 });
 
 test('appendHistory drops entries older than the window', () => {
     const history = [{ when: 0 }, { when: 50 * MINUTE }];
     assert.deepEqual(appendHistory(history, { when: 100 * MINUTE }, 60 * MINUTE).map((e) => e.when), [50 * MINUTE, 100 * MINUTE]);
+});
+
+test('month so far: electricity is entered in Wh, gas in m3', () => {
+    assert.deepEqual(monthSoFarFromConfig({ electricityMonthSoFarWh: 96500, gasMonthSoFar: 21.4 }), { kwh: 96.5, m3: 21.4 });
+    assert.deepEqual(monthSoFarFromConfig({}), { kwh: 0, m3: 0 });
 });
 
 test('monthKey uses the local year and month', () => {

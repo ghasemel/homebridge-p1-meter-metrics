@@ -13,9 +13,9 @@
         "required": true,
         "format": "ipv4"
       },
-      "electricityMonthSoFar": {
-        "title": "Electricity used this month so far (kWh)",
-        "description": "Optional, only for the month you install the plugin in: the HomeWizard app's month total. Without it, the month tiles start counting from the moment of install.",
+      "electricityMonthSoFarWh": {
+        "title": "Electricity used this month so far (Wh)",
+        "description": "Optional, only for the month you install the plugin in: the HomeWizard app's month total in Wh, the unit the tile uses (184 kWh = 184000). Without it, the month tiles start counting from the moment of install.",
         "type": "number",
         "minimum": 0
       },

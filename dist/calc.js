@@ -3,7 +3,7 @@
  * tested on their own.
  *
  * Units handed back here are the numbers the tiles show:
- *   electricity: W (now), Wh (last hour), kWh (month, total)
+ *   electricity: W (now), Wh (last hour); month and total are sent in Wh too
  *   gas:         litres (last 5 minutes, last hour), m3 (month, total)
  */
 
@@ -23,24 +23,25 @@ export function litresLastStep(previous, current) {
 }
 
 /**
- * The history entry from 60 minutes before `now`: the newest one at or before that
- * moment, as long as it is no more than `tolerance` older. Null when the history does
- * not reach back an hour, or has a gap there.
+ * The history entry to count the last hour from: the newest one at or before 60 minutes
+ * ago, as long as it is no more than `tolerance` older. While the history is shorter than
+ * an hour (or has a gap there), the oldest entry inside the hour, so the value shows what
+ * was used so far. Null only when there is no earlier entry at all.
  */
 export function entryHourAgo(history, now, tolerance) {
     const target = now - 60 * MINUTE;
-    const past = history.filter((entry) => entry.when <= target).at(-1);
-    if (!past || target - past.when > tolerance) return null;
-    return past;
+    const before = history.filter((entry) => entry.when <= target).at(-1);
+    if (before && target - before.when <= tolerance) return before;
+    return history.find((entry) => entry.when > target && entry.when < now) ?? null;
 }
 
-/** Litres of gas used in the last 60 minutes, or null until the gas history reaches back an hour. */
+/** Litres of gas used in the last 60 minutes (so far, while the history is shorter than an hour). */
 export function litresLastHour(gasHistory, current) {
     const past = entryHourAgo(gasHistory, current.when, 6 * MINUTE);
     return past ? Math.max(0, Math.round((current.total - past.total) * 1000)) : null;
 }
 
-/** Wh of electricity used in the last 60 minutes, or null until the electricity history reaches back an hour. */
+/** Wh of electricity used in the last 60 minutes (so far, while the history is shorter than an hour). */
 export function wattHoursLastHour(electricityHistory, now, kwh) {
     const past = entryHourAgo(electricityHistory, now, 2 * MINUTE);
     return past ? Math.max(0, Math.round((kwh - past.kwh) * 1000)) : null;
@@ -70,6 +71,14 @@ export function monthStart(state, key, kwh, m3, soFar) {
     if (state && state.key === key && (sameNumbers || !state.firstMonth)) return state;
     if (state && state.key !== key) return { key, kwh, m3, soFar: wanted, firstMonth: false };
     return { key, kwh: kwh - wanted.kwh, m3: m3 - wanted.m3, soFar: wanted, firstMonth: true };
+}
+
+/**
+ * The month-so-far numbers from the plugin settings, in the units the month start uses:
+ * electricity is entered in Wh (the unit its tile uses), gas in m3.
+ */
+export function monthSoFarFromConfig(config) {
+    return { kwh: (Number(config?.electricityMonthSoFarWh) || 0) / 1000, m3: Number(config?.gasMonthSoFar) || 0 };
 }
 
 /** Rounds a tile value to the precision it is shown with. */

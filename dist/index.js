@@ -8,8 +8,8 @@
  *
  *   Electricity        live power, W
  *   Electricity 1h     used in the last 60 minutes, Wh
- *   Electricity month  used this month, kWh
- *   Electricity total  meter total, kWh
+ *   Electricity month  used this month, Wh (Home shows it as kW)
+ *   Electricity total  meter total, Wh (Home shows it as kW or MW)
  *   Gas L              used in the last 5 minutes (between two meter readings), litres
  *   Gas 1h L           used in the last 60 minutes, litres
  *   Gas month m³       used this month
@@ -23,7 +23,7 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { MINUTE, appendHistory, litresLastHour, litresLastStep, monthKey, monthStart, round, wattHoursLastHour } from './calc.js';
+import { MINUTE, appendHistory, litresLastHour, litresLastStep, monthKey, monthSoFarFromConfig, monthStart, round, wattHoursLastHour } from './calc.js';
 import { readMeter } from './meter.js';
 
 const PLUGIN_NAME = 'homebridge-p1-meter-metrics';
@@ -63,6 +63,13 @@ class HomeWizardTilesPlatform {
         this.stateFile = join(api.user.storagePath(), 'p1-meter-metrics.json');
         api.on('didFinishLaunching', () => void this.start());
     }
+
+    /**
+     * Homebridge only treats a platform as dynamic (and hands its cached accessories back
+     * instead of deleting them as orphans) when it has this HAP method, even if it only
+     * uses Matter. This plugin has no HAP accessories, so it does nothing.
+     */
+    configureAccessory() {}
 
     /** Homebridge hands back the tiles it restored from its cache. */
     configureMatterAccessory(accessory) {
@@ -136,13 +143,11 @@ class HomeWizardTilesPlatform {
             const everyMinute = now - this.lastMinute >= MINUTE;
 
             if (reading.kwh !== null) {
-                this.state.month = monthStart(this.state.month, monthKey(new Date(now)), reading.kwh, reading.gas?.total ?? 0, {
-                    kwh: this.config.electricityMonthSoFar,
-                    m3: this.config.gasMonthSoFar,
-                });
+                this.state.month = monthStart(this.state.month, monthKey(new Date(now)), reading.kwh, reading.gas?.total ?? 0, monthSoFarFromConfig(this.config));
                 await this.show('electricity', reading.powerW);
-                await this.show('electricity-total', round(reading.kwh, 1));
-                await this.show('electricity-month', round(reading.kwh - this.state.month.kwh, 1));
+                // In Wh, so Home shows them as kW (184 kWh = 184,000 Wh reads "184kW")
+                await this.show('electricity-total', Math.round(reading.kwh * 1000));
+                await this.show('electricity-month', Math.round((reading.kwh - this.state.month.kwh) * 1000));
                 if (everyMinute) {
                     await this.show('electricity-1h', wattHoursLastHour(this.state.electricityHistory, now, reading.kwh));
                     this.state.electricityHistory = appendHistory(this.state.electricityHistory, { when: now, kwh: reading.kwh }, KEEP_MS);
